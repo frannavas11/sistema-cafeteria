@@ -1,0 +1,293 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* =============================================================================
+   "Porcelana y cáscara" — sistema de diseño de la plataforma.
+   Ver docs/DESIGN.md para principios y reglas por superficie.
+
+   Paleta base (light):
+     porcelana  #EDEFEA  fondo mineral frío (bowl de cata, piedra andina)
+     loza       #FAFBF8  superficies elevadas
+     tueste     #2A1A12  tinta (espresso, no negro neutro)
+     cascara    #A3172F  acento: cereza de café madura → acción / requiere atención
+     grano      #6F7D48  grano verde → listo / éxito
+     crema      #C47F1F  crema del espresso → en preparación / aviso
+     acequia    #2D5F7A  canal de riego mendocino → en camino / info
+   ============================================================================= */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* ---- Paleta cruda ---- */
+  --porcelana: #edefea;
+  --loza: #fafbf8;
+  --loza-2: #e3e6df;
+  --tueste: #2a1a12;
+  --tueste-2: #5b4a40;
+  --piedra: #7d7a72;
+  --linea: #d3d6cd;
+  --linea-fuerte: #b5b8ae;
+
+  --cascara: #a3172f;
+  --grano: #6f7d48;
+  --crema: #c47f1f;
+  --acequia: #2d5f7a;
+
+  /* Fijos (no cambian en dark): texto sobre color de marca. Sincronizar con features/tenants/lib/theme.ts */
+  --ink-fixed: #2a1a12;
+  --paper-fixed: #ffffff;
+
+  /* Color de marca por cafetería (se sobreescribe por tenant). */
+  --cafe-primary: var(--cascara);
+  --cafe-primary-fg: #ffffff;
+
+  /* ---- Estados de pedido (semánticos, alto contraste en POS) ---- */
+  --status-pending: var(--cascara);
+  --status-pending-soft: #f6dfe2;
+  --status-preparing: var(--crema);
+  --status-preparing-soft: #f6e8cf;
+  --status-ready: var(--grano);
+  --status-ready-soft: #e4e9d3;
+  --status-on-the-way: var(--acequia);
+  --status-on-the-way-soft: #d7e5ec;
+  --status-delivered: var(--tueste-2);
+  --status-delivered-soft: #e6e2de;
+  --status-cancelled: var(--piedra);
+  --status-cancelled-soft: #e7e7e3;
+
+  /* Curva de tueste: rampa de progreso del pedido (verde → tostado oscuro). */
+  --roast-0: #a9b27c; /* grano verde   */
+  --roast-1: #d9b45a; /* amarillo      */
+  --roast-2: #b9742f; /* canela        */
+  --roast-3: #7c4220; /* city          */
+  --roast-4: #3b2215; /* full city     */
+
+  /* ---- Tokens shadcn mapeados ---- */
+  --background: var(--porcelana);
+  --foreground: var(--tueste);
+  --card: var(--loza);
+  --card-foreground: var(--tueste);
+  --popover: var(--loza);
+  --popover-foreground: var(--tueste);
+  --primary: var(--cafe-primary);
+  --primary-foreground: var(--cafe-primary-fg);
+  --secondary: var(--loza-2);
+  --secondary-foreground: var(--tueste);
+  --muted: var(--loza-2);
+  --muted-foreground: var(--piedra);
+  --accent: var(--loza-2);
+  --accent-foreground: var(--tueste);
+  --destructive: #b42318;
+  --border: var(--linea);
+  --input: var(--linea-fuerte);
+  --ring: var(--acequia);
+  --chart-1: var(--cascara);
+  --chart-2: var(--crema);
+  --chart-3: var(--grano);
+  --chart-4: var(--acequia);
+  --chart-5: var(--tueste-2);
+
+  --sidebar: var(--tueste);
+  --sidebar-foreground: #ece6df;
+  --sidebar-primary: var(--cafe-primary);
+  --sidebar-primary-foreground: var(--cafe-primary-fg);
+  --sidebar-accent: #3a2a21;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #3d2d24;
+  --sidebar-ring: var(--crema);
+
+  /* Radios con jerarquía: controles < superficies < hojas. */
+  --radius: 0.5rem;
+  --radius-surface: 0.875rem;
+  --radius-sheet: 1.5rem;
+
+  /* Densidad: la tienda respira, el POS se compacta. */
+  --tap: 2.75rem;
+}
+
+.dark {
+  --porcelana: #15100c;
+  --loza: #1f1712;
+  --loza-2: #2a201a;
+  --tueste: #efe9e2;
+  --tueste-2: #c7bbb1;
+  --piedra: #9a9087;
+  --linea: #3a2d25;
+  --linea-fuerte: #54443a;
+
+  --cascara: #e2566a;
+  --grano: #a8b879;
+  --crema: #e3a447;
+  --acequia: #79aecb;
+
+  --status-pending-soft: #3a1a20;
+  --status-preparing-soft: #3a2a14;
+  --status-ready-soft: #2a3020;
+  --status-on-the-way-soft: #1a2c36;
+  --status-delivered-soft: #2b241f;
+  --status-cancelled-soft: #26221f;
+
+  --destructive: #f0786c;
+  --cafe-primary-fg: #1a0d08;
+
+  --sidebar: #0f0b08;
+  --sidebar-accent: #241a14;
+  --sidebar-border: #2a1f18;
+}
+
+/* Modo POS / recepción: alta densidad, objetivos táctiles grandes. */
+[data-density="compact"] {
+  --tap: 3rem;
+  font-stretch: 88%;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Paleta nombrada */
+  --color-porcelana: var(--porcelana);
+  --color-loza: var(--loza);
+  --color-tueste: var(--tueste);
+  --color-tueste-2: var(--tueste-2);
+  --color-piedra: var(--piedra);
+  --color-cascara: var(--cascara);
+  --color-grano: var(--grano);
+  --color-crema: var(--crema);
+  --color-acequia: var(--acequia);
+  --color-cafe: var(--cafe-primary);
+  --color-cafe-fg: var(--cafe-primary-fg);
+
+  --color-status-pending: var(--status-pending);
+  --color-status-pending-soft: var(--status-pending-soft);
+  --color-status-preparing: var(--status-preparing);
+  --color-status-preparing-soft: var(--status-preparing-soft);
+  --color-status-ready: var(--status-ready);
+  --color-status-ready-soft: var(--status-ready-soft);
+  --color-status-on-the-way: var(--status-on-the-way);
+  --color-status-on-the-way-soft: var(--status-on-the-way-soft);
+  --color-status-delivered: var(--status-delivered);
+  --color-status-delivered-soft: var(--status-delivered-soft);
+  --color-status-cancelled: var(--status-cancelled);
+  --color-status-cancelled-soft: var(--status-cancelled-soft);
+
+  --color-roast-0: var(--roast-0);
+  --color-roast-1: var(--roast-1);
+  --color-roast-2: var(--roast-2);
+  --color-roast-3: var(--roast-3);
+  --color-roast-4: var(--roast-4);
+
+  /* Tipografía: una sola familia (Archivo) con eje de ancho. */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala tipográfica (razón ~1.25, base 16px) */
+  --text-display: 3.815rem;
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.035em;
+  --text-title: 2.441rem;
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.025em;
+  --text-heading: 1.563rem;
+  --text-heading--line-height: 1.15;
+  --text-heading--letter-spacing: -0.015em;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius-surface);
+  --radius-2xl: var(--radius-sheet);
+  --radius-3xl: calc(var(--radius-sheet) * 1.25);
+  --radius-4xl: calc(var(--radius-sheet) * 1.5);
+
+  --spacing-tap: var(--tap);
+
+  /* Única animación no disparada por el usuario: un pedido nuevo que pide atención. */
+  --animate-pulse-ring: pulse-ring 1.6s ease-out infinite;
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--status-pending) 55%, transparent); }
+    100% { box-shadow: 0 0 0 14px transparent; }
+  }
+}
+
+/* Anchos de Archivo: expandido para titulares tipo etiqueta, condensado para datos densos. */
+@utility font-wide {
+  font-stretch: 118%;
+}
+@utility font-condensed {
+  font-stretch: 78%;
+}
+@utility numeric {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+/* Borde perforado de comanda (ticket de barra). */
+@utility perforation {
+  height: 1px;
+  background-image: linear-gradient(to right, var(--linea-fuerte) 55%, transparent 55%);
+  background-size: 9px 1px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-heading;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

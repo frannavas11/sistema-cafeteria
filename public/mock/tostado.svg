@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <g id="half">
+      <path d="M0 0 L240 0 L0 240 Z" fill="#c98a3e" stroke="#9a5a26" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M22 18 L196 18 L18 196 Z" fill="#e9c07a"/>
+      <path d="M40 40 L120 40 M40 80 L84 80 M40 120 L60 120" stroke="#7c4220" stroke-width="12" stroke-linecap="round" opacity=".45"/>
+      <path d="M240 0 Q 252 40 236 66 Q 226 84 210 70 L 236 4 Z" fill="#f3d34a"/>
+      <path d="M240 0 L0 240" stroke="#d98c8c" stroke-width="10" stroke-linecap="round"/>
+    </g>
+  </defs>
+  <rect width="800" height="600" fill="#e4e9d3"/>
+  <ellipse cx="416" cy="318" rx="222" ry="222" fill="#2a1a12" opacity=".1"/>
+  <circle cx="400" cy="300" r="220" fill="#fafbf8"/>
+  <circle cx="400" cy="300" r="186" fill="none" stroke="#e3e6df" stroke-width="5"/>
+  <use href="#half" transform="translate(280 180)"/>
+  <use href="#half" transform="translate(534 434) rotate(180)"/>
+  <g fill="#6f7d48">
+    <ellipse cx="610" cy="176" rx="18" ry="9" transform="rotate(-30 610 176)"/>
+    <ellipse cx="634" cy="200" rx="16" ry="8" transform="rotate(20 634 200)"/>
+  </g>
+</svg>
