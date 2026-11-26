@@ -3,7 +3,14 @@ import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
 import { parseCafeConfig, type PublicCafe } from "./types";
 
-export type CafeListing = { id: string; name: string; slug: string; address: string | null; tagline?: string };
+export type CafeListing = {
+  id: string;
+  name: string;
+  slug: string;
+  address: string | null;
+  tagline?: string;
+  brand_color?: string;
+};
 
 /** Cafeterías activas para el directorio de la home (RLS: sólo las públicas). */
 export async function listPublicCafes(): Promise<CafeListing[]> {
@@ -16,7 +23,10 @@ export async function listPublicCafes(): Promise<CafeListing[]> {
     .select("id, name, slug, address, config")
     .order("name");
 
-  return (data ?? []).map(({ config, ...c }) => ({ ...c, tagline: parseCafeConfig(config).tagline }));
+  return (data ?? []).map(({ config, ...c }) => {
+    const { tagline, brand_color } = parseCafeConfig(config);
+    return { ...c, tagline, brand_color };
+  });
 }
 
 /** Café público por slug (cacheado; invalidar desde una Server Action con `updateTag('cafe:<slug>')`). */

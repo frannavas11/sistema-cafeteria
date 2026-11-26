@@ -2,16 +2,21 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Wordmark } from "@/components/shell/wordmark";
+import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { listPublicCafes } from "@/features/tenants/queries";
+import { cafeThemeStyle } from "@/features/tenants/lib/theme";
 
 export default function HomePage() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-5xl flex-col px-6">
       <header className="flex h-20 items-center justify-between">
         <Wordmark className="text-2xl" />
-        <Link href="/login" className={buttonVariants({ variant: "outline", size: "lg", className: "h-10 px-4" })}>
-          Entrar
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle compact />
+          <Link href="/login" className={buttonVariants({ variant: "outline", size: "lg", className: "h-10 px-4" })}>
+            Entrar
+          </Link>
+        </div>
       </header>
 
       <section className="py-16 sm:py-24">
@@ -42,15 +47,23 @@ async function CafeDirectory() {
     return <p className="mt-4 text-muted-foreground">Todavía no hay cafeterías publicadas.</p>;
   }
   return (
-    <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
+    <ul className="mt-6 grid gap-4 sm:grid-cols-2">
       {cafes.map((c) => (
-        <li key={c.id} className="border-b border-border">
-          <Link href={`/${c.slug}`} className="group block py-6">
-            <span className="block font-wide text-[1.5rem] leading-tight font-extrabold group-hover:text-cascara">
-              {c.name}
+        <li key={c.id} style={cafeThemeStyle({ brand_color: c.brand_color })}>
+          <Link
+            href={`/${c.slug}`}
+            className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-primary"
+          >
+            <span className="flex min-h-32 items-end bg-primary px-5 pt-8 pb-4 text-primary-foreground">
+              <span className="font-wide text-[1.75rem] leading-[0.95] font-extrabold tracking-[-0.03em]">
+                {c.name}
+              </span>
             </span>
-            {c.tagline && <span className="mt-2 block max-w-[40ch] text-muted-foreground">{c.tagline}</span>}
-            {c.address && <span className="mt-3 block text-sm text-muted-foreground">{c.address}</span>}
+            <span className="flex flex-1 flex-col px-5 py-4">
+              {c.tagline && <span className="max-w-[40ch] text-foreground">{c.tagline}</span>}
+              {c.address && <span className="mt-2 text-sm text-muted-foreground">{c.address}</span>}
+              <span className="mt-4 text-sm font-semibold text-primary group-hover:underline">Ver la carta</span>
+            </span>
           </Link>
         </li>
       ))}

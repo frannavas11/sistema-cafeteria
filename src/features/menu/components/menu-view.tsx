@@ -52,7 +52,7 @@ export function MenuView({ cafe, menu }: Props) {
           <h2 id="destacados" className="text-heading font-bold">
             Lo más pedido
           </h2>
-          <ul className="-mx-5 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none]">
+          <ul className="-mx-5 mt-4 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none]">
             {featured.map((p, i) => (
               <li key={p.id} className="w-[68%] shrink-0 snap-start sm:w-56">
                 <button type="button" onClick={() => setProduct(p)} className="group block w-full text-left">

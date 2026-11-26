@@ -25,7 +25,9 @@ Cada color tiene un trabajo:
 
 - **Color del tenant:** cada cafetería define `config.brand_color`, que se inyecta como
   `--cafe-primary` y reemplaza a cáscara en las acciones primarias (`bg-primary`, `bg-cafe`). El
-  color de texto encima lo decide `contrastText()` según WCAG. **No** se usa para fondos grandes.
+  color de texto encima lo decide `contrastText()` según WCAG. Solo ocupa superficie en dos
+  lugares: la franja de cabecera de la tienda y la tarjeta del café en el directorio de la home.
+  En el resto, solo en acciones.
 - **Modo oscuro "tueste":** los mismos roles con luminancias invertidas.
 
 ## Tipografía
@@ -59,7 +61,10 @@ canela, city y full city.
 ## Superficies
 - **Tienda `/[slug]`:**
   - Mobile-first y una columna.
-  - La foto del producto es la protagonista.
+  - Cabecera en el color del café, con el producto estrella recortado en círculo.
+  - "Lo más pedido" en carrusel con foto grande; en la carta, filas con miniatura y el "+" encima.
+  - La foto del producto es la protagonista. Mientras no haya fotos reales, se usan las
+    ilustraciones de `public/mock/` (vista cenital, fondo de la paleta suave).
   - Compra en tres toques o menos; el carrito va en una hoja inferior (vaul).
   - El color del tenant aparece solo en las acciones.
 - **POS y recepción `/admin/[slug]`:**
