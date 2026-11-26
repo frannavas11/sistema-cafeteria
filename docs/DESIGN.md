@@ -35,11 +35,18 @@ Una sola familia, **Archivo** variable, con ejes de peso y ancho:
 
 | Uso | Clase | Ancho / peso |
 |---|---|---|
-| Nombres de café y producto, display | `font-wide text-display` | 118 / 800 |
-| Títulos de sección | `text-title`, `text-heading` | 100 / 700 |
+| Carteles: nombre del café, categorías de la carta, títulos de hoja | `font-wide` | 118 / 800 |
+| Títulos de sección del panel | `text-title`, `text-heading` | 100 / 700 |
+| Nombres de producto en la carta | `font-semibold` | 100 / 600 |
 | Lectura | base 16 px, interlineado 1,6, máximo ~65 caracteres por línea | — |
-| POS, tickets, listas densas | `font-condensed` o `data-density="compact"` | 78–88 |
+| Descripciones y frase del café (la voz de la barra) | `italic` | 100 / 400 |
+| POS, tickets, comanda del checkout, listas densas | `font-condensed` o `data-density="compact"` | 78–88 |
 | Precios y números de pedido | `numeric` (cifras tabulares) | — |
+
+**El ancho marca la superficie:** expandido para los carteles, normal para leer la carta y
+condensado para la comanda. Los nombres de producto no van expandidos: en 390 px, con foto y
+precio en el mismo renglón, el ancho 118 los partía en dos líneas y dejaba sin lugar a los
+puntos guía.
 
 Sin monoespaciada para datos y sin mayúsculas sostenidas para etiquetas.
 
@@ -55,16 +62,36 @@ canela, city y full city.
 - **Radios:** 8 px en controles, 14 px en superficies, 24 px en hojas inferiores. Nunca un único
   radio para todo.
 - **Sombras:** casi nunca. El ticket es la excepción: es un objeto que se apoya en la barra.
-- **Divisores:** hairlines `border-border`. La perforación (`perforation`) queda solo para
-  tickets.
+- **Divisores:** hairlines `border-border`. La perforación (`perforation`) y el corte dentado
+  (`ticket-edge`) quedan solo para tickets.
 
 ## Superficies
 - **Tienda `/[slug]`:**
   - Mobile-first y una columna.
-  - Cabecera en el color del café, con el producto estrella recortado en círculo.
-  - "Lo más pedido" en carrusel con foto grande; en la carta, filas con miniatura y el "+" encima.
-  - La foto del producto es la protagonista. Mientras no haya fotos reales, se usan las
-    ilustraciones de `public/mock/` (vista cenital, fondo de la paleta suave).
+  - Portada: foto del local (`config.cover_url`) a todo el ancho y, debajo, el "cartel" del café
+    como un toldo: franja a todo el ancho en su color, sin radio ni sombra, con el nombre
+    expandido, la frase en itálica y, tras un filete, el estado (punto lleno = abierto, aro =
+    cerrado; forma y no color, porque el fondo es el color de cada café) y la dirección como
+    enlace al mapa. La franja cierra con la rampa de tueste completa (`roast-0..4`).
+  - "La barra recomienda": carrusel con foto vertical y el precio en una etiqueta de loza sobre
+    la foto. Es lo primero de cada categoría, por eso no se llama "Lo más pedido" (no hay datos
+    de ventas detrás).
+  - Carta impresa: nombre, puntos guía y precio; descripción en itálica; miniatura con el "+"
+    redondo superpuesto. Los puntos usan `carta-dots` en la columna del nombre y `carta-name`
+    en el nombre: si el nombre baja a dos renglones, los puntos siguen al último.
+  - Las fotos llevan un filete interior (`ring-ink/10`) para que una taza blanca no se funda con
+    la porcelana.
+  - Cada categoría toma un grado de la curva de tueste (punto en el chip de navegación y
+    barra bajo el título), así el elemento firma recorre la carta. El chip de la categoría que se
+    está leyendo se invierte (tinta sobre porcelana) y lleva `aria-current`.
+  - Cierre: ticket de barra cortado del rollo (`ticket-edge`, borde dentado), con horarios en
+    condensado y dirección (`StoreTicket`).
+  - El color del café se inyecta como regla de documento (`<CafeTheme>`, que emite
+    `cafeThemeCss()`): así lo reciben también las hojas (vaul) y los avisos (sonner), que se
+    montan en un portal. En modo oscuro, si la marca no llega a 3:1 contra el fondo,
+    `darkBrand()` la aclara para las acciones (el "+", los botones); la franja del cartel usa
+    `bg-band` y conserva siempre el color original. El seguimiento usa el mismo tema.
+  - Fotos de prueba: `public/mock/photos/` (Wikimedia Commons, créditos en `CREDITS.md`).
   - Compra en tres toques o menos; el carrito va en una hoja inferior (vaul).
   - El color del tenant aparece solo en las acciones.
 - **POS y recepción `/admin/[slug]`:**

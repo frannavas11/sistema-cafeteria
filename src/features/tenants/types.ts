@@ -2,7 +2,11 @@ import { z } from "zod";
 import type { Tables } from "@/types/supabase";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/, "Color hex de 6 dígitos");
-const httpsUrl = z.url({ protocol: /^https$/ });
+// https externo, o una foto de prueba servida desde /public/mock (solo datos de demo).
+const httpsUrl = z.union([
+  z.url({ protocol: /^https$/ }),
+  z.string().regex(/^\/mock\/[\w/-]+\.(jpg|png|webp)$/),
+]);
 
 /**
  * Config pública de una cafetería (columna `cafes.config`). Nunca guardar secretos acá.

@@ -119,7 +119,9 @@ export function CheckoutSheet({
           <div className="mx-auto mt-3 h-1.5 w-10 shrink-0 rounded-full bg-border" aria-hidden />
           <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col">
             <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-6">
-              <Drawer.Title className="mt-4 font-wide text-heading font-extrabold">Tu pedido</Drawer.Title>
+              <Drawer.Title className="mt-4 font-wide text-[1.75rem] leading-tight font-extrabold tracking-[-0.03em]">
+                Tu pedido
+              </Drawer.Title>
               <Drawer.Description className="mt-1 text-muted-foreground">{cafe.name}</Drawer.Description>
 
               {/* Comanda */}
@@ -130,7 +132,7 @@ export function CheckoutSheet({
                 {cart.lines.map((line) => (
                   <li key={line.key} className="flex items-start gap-3 border-b border-border py-3.5 last:border-b-0">
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold">{line.name}</p>
+                      <p className="font-condensed text-[1.0625rem] leading-snug font-semibold">{line.name}</p>
                       {line.options.length > 0 && (
                         <p className="mt-0.5 text-sm text-muted-foreground">
                           {line.options.map((o) => o.name).join(", ")}
@@ -295,9 +297,9 @@ export function CheckoutSheet({
                     <dd>{zone ? formatARS(fee) : "Se calcula con tu ubicación"}</dd>
                   </div>
                 )}
-                <div className="flex justify-between pt-1 text-base font-semibold">
-                  <dt>Total</dt>
-                  <dd>{formatARS(cart.subtotal + fee)}</dd>
+                <div className="flex items-baseline justify-between pt-1.5 font-semibold">
+                  <dt className="text-base">Total</dt>
+                  <dd className="text-xl font-bold tracking-[-0.01em]">{formatARS(cart.subtotal + fee)}</dd>
                 </div>
               </dl>
               {result && !result.field && <ErrorText className="mt-2">{result.error}</ErrorText>}

@@ -91,7 +91,7 @@ export default function DesignPage() {
           <div>
             <p className="font-wide text-display font-extrabold">Flat white</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Display, ancho 118, peso 800. Nombres de cafetería y de producto en la tienda.
+              Display, ancho 118, peso 800. Carteles: nombre de la cafetería y categorías de la carta.
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-2">
@@ -189,6 +189,29 @@ export default function DesignPage() {
 
           <Ticket />
         </div>
+      </Section>
+
+      {/* -------------------------------------------------- Carta impresa */}
+      <Section
+        title="Carta impresa"
+        note="Nombre, puntos guía y precio. Si el nombre baja a dos renglones, los puntos siguen al último (carta-dots + carta-name)."
+      >
+        <ul className="max-w-sm">
+          {[
+            ["Cortado", 2900, "Espresso con una nube de leche."],
+            ["Tostado de campo con huevo de granja", 15900, "Pan de masa madre, jamón crudo y queso."],
+          ].map(([name, price, desc]) => (
+            <li key={String(name)} className="border-b border-border py-4 last:border-b-0">
+              <span className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-1.5 text-[1.0625rem] leading-[1.35]">
+                <span className="carta-dots block">
+                  <span className="carta-name font-semibold tracking-[-0.01em]">{name}</span>
+                </span>
+                <span className="numeric font-semibold">{formatARS(Number(price))}</span>
+              </span>
+              <span className="mt-1.5 block text-[0.9375rem] text-muted-foreground italic">{desc}</span>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       {/* ------------------------------------------------- Marca por tenant */}

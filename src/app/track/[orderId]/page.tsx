@@ -7,6 +7,8 @@ import { AutoRefresh } from "@/features/orders/components/auto-refresh";
 import { LocalTime } from "@/features/orders/components/local-time";
 import { CHANNEL_LABEL, ORDER_STATUS } from "@/features/orders/types";
 import { formatARS } from "@/lib/format";
+import { getPublicCafe } from "@/features/tenants/queries";
+import { CafeTheme } from "@/features/tenants/components/cafe-theme";
 
 export const metadata: Metadata = { title: "Seguimiento", robots: { index: false } };
 
@@ -41,12 +43,14 @@ async function Tracking({ params }: Pick<PageProps<"/track/[orderId]">, "params"
     );
   }
 
+  const cafe = await getPublicCafe(order.cafe.slug);
   const meta = ORDER_STATUS[order.status];
   const finished = ["delivered", "cancelled", "rejected"].includes(order.status);
   const eta = order.estimated_ready_at;
 
   return (
     <>
+      {cafe && <CafeTheme config={cafe.config} />}
       {!finished && <AutoRefresh />}
       <p className="text-muted-foreground">
         {order.cafe.name}, pedido <span className="numeric font-semibold text-foreground">#{order.order_number}</span>
@@ -81,7 +85,7 @@ async function Tracking({ params }: Pick<PageProps<"/track/[orderId]">, "params"
       </p>
       <Link
         href={`/${order.cafe.slug}`}
-        className="mt-6 inline-flex min-h-tap items-center rounded-lg border border-input px-4 font-medium hover:bg-muted"
+        className="mt-6 inline-flex min-h-tap items-center rounded-lg bg-primary px-4 font-medium text-primary-foreground hover:bg-primary/90"
       >
         Volver a la carta
       </Link>

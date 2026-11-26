@@ -123,20 +123,26 @@ insert into public.products (id, cafe_id, category_id, name, description, price,
    'Tostado de campo', 'Pan de masa madre, jamón crudo y queso.', 5900, false, 0, 2)
 on conflict (id) do nothing;
 
--- Fotos mock: ilustraciones propias en /public/mock (reemplazar por fotos reales en Storage).
+-- Fotos mock: Wikimedia Commons en /public/mock/photos (créditos en CREDITS.md).
+-- Reemplazar por fotos propias subidas a Storage antes de producción.
 update public.products p set image_url = v.url
 from (values
-  ('a2000000-0000-4000-8000-000000000001'::uuid, '/mock/flat-white.svg'),
-  ('a2000000-0000-4000-8000-000000000002'::uuid, '/mock/cortado.svg'),
-  ('a2000000-0000-4000-8000-000000000003'::uuid, '/mock/v60.svg'),
-  ('a2000000-0000-4000-8000-000000000004'::uuid, '/mock/cardamom-bun.svg'),
-  ('a2000000-0000-4000-8000-000000000005'::uuid, '/mock/budin-limon.svg'),
-  ('b2000000-0000-4000-8000-000000000001'::uuid, '/mock/latte.svg'),
-  ('b2000000-0000-4000-8000-000000000002'::uuid, '/mock/chemex.svg'),
-  ('b2000000-0000-4000-8000-000000000003'::uuid, '/mock/medialunas.svg'),
-  ('b2000000-0000-4000-8000-000000000004'::uuid, '/mock/tostado.svg')
+  ('a2000000-0000-4000-8000-000000000001'::uuid, '/mock/photos/flat-white.jpg'),
+  ('a2000000-0000-4000-8000-000000000002'::uuid, '/mock/photos/cortado.jpg'),
+  ('a2000000-0000-4000-8000-000000000003'::uuid, '/mock/photos/v60.jpg'),
+  ('a2000000-0000-4000-8000-000000000004'::uuid, '/mock/photos/cardamom-bun.jpg'),
+  ('a2000000-0000-4000-8000-000000000005'::uuid, '/mock/photos/budin-limon.jpg'),
+  ('b2000000-0000-4000-8000-000000000001'::uuid, '/mock/photos/latte.jpg'),
+  ('b2000000-0000-4000-8000-000000000002'::uuid, '/mock/photos/chemex.jpg'),
+  ('b2000000-0000-4000-8000-000000000003'::uuid, '/mock/photos/medialunas.jpg'),
+  ('b2000000-0000-4000-8000-000000000004'::uuid, '/mock/photos/tostado.jpg')
 ) as v(id, url)
 where p.id = v.id and p.image_url is null;
+
+update public.cafes set config = config || '{"cover_url": "/mock/photos/cover-norte.jpg"}'
+ where id = 'a0000000-0000-4000-8000-000000000001' and not config ? 'cover_url';
+update public.cafes set config = config || '{"cover_url": "/mock/photos/cover-sur.jpg"}'
+ where id = 'b0000000-0000-4000-8000-000000000001' and not config ? 'cover_url';
 
 -- -------------------------------------------------------- variantes/extras ---
 insert into public.product_option_groups (id, cafe_id, product_id, name, min_select, max_select, sort_order) values

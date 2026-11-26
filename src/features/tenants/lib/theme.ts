@@ -7,6 +7,8 @@ import type { CafeConfig } from "../types";
  */
 const INK_HEX = "#2a1a12";
 const SIDEBAR_HEX = "#2a1a12";
+/** Fondo del modo oscuro (`--porcelana` dentro de `.dark` en globals.css). */
+const DARK_BG_HEX = "#15100c";
 
 function luminance(hex: string): number {
   const channels = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
@@ -26,6 +28,30 @@ export function contrastText(hex: string): "var(--paper-fixed)" | "var(--ink-fix
   return onPaper >= onInk ? "var(--paper-fixed)" : "var(--ink-fixed)";
 }
 
+/** Mezcla un hex con blanco (`amount` 0–1) y devuelve hex. */
+function lighten(hex: string, amount: number): string {
+  const mixed = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16);
+    return Math.round(c + (255 - c) * amount)
+      .toString(16)
+      .padStart(2, "0");
+  });
+  return `#${mixed.join("")}`;
+}
+
+/**
+ * Variante del color de marca para modo oscuro: si no llega a 3:1 contra el fondo
+ * tueste (WCAG 1.4.11, componentes de interfaz), se aclara de a poco hasta cumplir.
+ * Así el "+" y los botones de un café con marca oscura no se pierden de noche.
+ */
+export function darkBrand(hex: string): string {
+  let out = hex;
+  for (let step = 1; step <= 20 && contrastRatio(out, DARK_BG_HEX) < 3; step++) {
+    out = lighten(hex, step * 0.05);
+  }
+  return out;
+}
+
 type ThemeVars = CSSProperties & Record<`--${string}`, string>;
 
 /**
@@ -40,6 +66,9 @@ export function cafeThemeStyle(config: Pick<CafeConfig, "brand_color">): ThemeVa
   const fg = contrastText(config.brand_color);
   const sidebarOk = contrastRatio(config.brand_color, SIDEBAR_HEX) >= 3;
   return {
+    // La franja del cartel conserva siempre el color original de la marca.
+    "--cafe-band": config.brand_color,
+    "--cafe-band-fg": fg,
     "--cafe-primary": config.brand_color,
     "--cafe-primary-fg": fg,
     "--primary": config.brand_color,
@@ -47,4 +76,35 @@ export function cafeThemeStyle(config: Pick<CafeConfig, "brand_color">): ThemeVa
     "--sidebar-primary": sidebarOk ? config.brand_color : "var(--crema)",
     "--sidebar-primary-foreground": sidebarOk ? fg : "var(--ink-fixed)",
   };
+}
+
+const HEX = /^#[0-9a-f]{6}$/i;
+
+/**
+ * Las mismas variables como regla de documento. Hace falta en la tienda porque las hojas
+ * (vaul) y los avisos (sonner) se montan en un portal dentro de `body`, fuera del contenedor
+ * con `style`: sin esto, la ficha y el checkout pierden el color del café.
+ * `:root:root` le gana a `.dark` (que también redefine `--cafe-primary-fg`), y
+ * `:root:root.dark` aplica la variante clara de la marca en modo oscuro.
+ * Sólo acepta hex: el resultado se inserta como CSS.
+ */
+export function cafeThemeCss(config: Pick<CafeConfig, "brand_color">): string {
+  if (!config.brand_color || !HEX.test(config.brand_color)) return "";
+  const decl = (vars: object) =>
+    Object.entries(vars)
+      .map(([k, v]) => `${k}:${String(v)}`)
+      .join(";");
+
+  const light = decl(cafeThemeStyle(config));
+  const dark = darkBrand(config.brand_color);
+  if (dark === config.brand_color) return `:root:root{${light}}`;
+
+  const darkFg = contrastText(dark);
+  const darkVars = decl({
+    "--cafe-primary": dark,
+    "--cafe-primary-fg": darkFg,
+    "--primary": dark,
+    "--primary-foreground": darkFg,
+  });
+  return `:root:root{${light}}:root:root.dark{${darkVars}}`;
 }

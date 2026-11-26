@@ -4,7 +4,11 @@ import { cn } from "@/lib/utils";
 import { useOpenState } from "../hooks/use-open-state";
 import type { CafeHour } from "../types";
 
-/** Estado abierto/cerrado sobre la franja de color del café. */
+/**
+ * Estado abierto/cerrado sobre la franja de color del café.
+ * Se codifica por forma (punto lleno = abierto, aro = cerrado) y no por color: el fondo
+ * es el color de cada café y un verde o un rojo no tendrían contraste garantizado.
+ */
 export function OpenBadge({
   hours,
   timezone,
@@ -16,7 +20,7 @@ export function OpenBadge({
 }) {
   const state = useOpenState(hours, timezone);
   // Reserva el lugar antes de hidratar para que la cabecera no salte.
-  if (state === null) return <span className="inline-block h-8 w-44" aria-hidden />;
+  if (state === null) return <span className="block h-6" aria-hidden />;
 
   const open = state.open && acceptsOrders;
   const text = !acceptsOrders
@@ -30,12 +34,15 @@ export function OpenBadge({
         : "Cerrado por ahora";
 
   return (
-    <span className="inline-flex h-8 items-center gap-2 rounded-full bg-primary-foreground/12 px-3 text-sm font-medium">
+    <p className="flex min-h-6 items-center gap-2.5 font-semibold">
       <span
         aria-hidden
-        className={cn("size-2 rounded-full", open ? "bg-status-ready-soft" : "bg-primary-foreground/50")}
+        className={cn(
+          "size-2.5 shrink-0 rounded-full",
+          open ? "bg-current ring-4 ring-current/25" : "border-2 border-current opacity-80",
+        )}
       />
-      {text}
-    </span>
+      <span className="numeric">{text}</span>
+    </p>
   );
 }

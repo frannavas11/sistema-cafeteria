@@ -41,6 +41,9 @@
   /* Color de marca por cafetería (se sobreescribe por tenant). */
   --cafe-primary: var(--cascara);
   --cafe-primary-fg: #ffffff;
+  /* Franja del cartel: siempre el color original (en dark, --cafe-primary puede aclararse). */
+  --cafe-band: var(--cafe-primary);
+  --cafe-band-fg: var(--cafe-primary-fg);
 
   /* ---- Estados de pedido (semánticos, alto contraste en POS) ---- */
   --status-pending: var(--cascara);
@@ -185,7 +188,11 @@
   --color-grano: var(--grano);
   --color-crema: var(--crema);
   --color-acequia: var(--acequia);
+  --color-ink: var(--ink-fixed);
+  --color-paper: var(--paper-fixed);
   --color-cafe: var(--cafe-primary);
+  --color-band: var(--cafe-band);
+  --color-band-fg: var(--cafe-band-fg);
   --color-cafe-fg: var(--cafe-primary-fg);
 
   --color-status-pending: var(--status-pending);
@@ -251,6 +258,31 @@
 @utility numeric {
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings: "tnum" 1, "lnum" 1;
+}
+/*
+ * Renglón de carta que tolera nombres de dos líneas: los puntos se dibujan sólo sobre la
+ * línea base del último renglón y el nombre (con `carta-name`) los tapa con el color de fondo.
+ * Así "Tostado de / campo ········ $5.900" sigue leyéndose como carta impresa.
+ */
+@utility carta-dots {
+  background-image: radial-gradient(circle, var(--linea-fuerte) 1px, transparent 1.25px);
+  background-size: 6px 4px;
+  background-repeat: repeat-x;
+  background-position: left bottom 0.3em;
+}
+@utility carta-name {
+  background-color: var(--background);
+  padding-right: 0.4em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+/* Corte dentado de rollo de comanda en el borde inferior. La sombra va en el padre (drop-shadow). */
+@utility ticket-edge {
+  --tooth: 10px;
+  mask-image: radial-gradient(circle at 50% 100%, transparent 4px, black 4.5px);
+  mask-size: var(--tooth) 100%;
+  mask-repeat: repeat-x;
+  mask-position: left bottom;
 }
 /* Borde perforado de comanda (ticket de barra). */
 @utility perforation {

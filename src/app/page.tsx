@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { buttonVariants } from "@/components/ui/button";
@@ -54,7 +55,18 @@ async function CafeDirectory() {
             href={`/${c.slug}`}
             className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-primary"
           >
-            <span className="flex min-h-32 items-end bg-primary px-5 pt-8 pb-4 text-primary-foreground">
+            {c.cover_url && (
+              <span className="relative block aspect-[16/9] overflow-hidden bg-muted">
+                <Image
+                  src={c.cover_url}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, 480px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </span>
+            )}
+            <span className="flex items-end bg-primary px-5 py-4 text-primary-foreground">
               <span className="font-wide text-[1.75rem] leading-[0.95] font-extrabold tracking-[-0.03em]">
                 {c.name}
               </span>

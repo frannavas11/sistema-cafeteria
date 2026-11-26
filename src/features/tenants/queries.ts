@@ -10,6 +10,7 @@ export type CafeListing = {
   address: string | null;
   tagline?: string;
   brand_color?: string;
+  cover_url?: string;
 };
 
 /** Cafeterías activas para el directorio de la home (RLS: sólo las públicas). */
@@ -24,8 +25,8 @@ export async function listPublicCafes(): Promise<CafeListing[]> {
     .order("name");
 
   return (data ?? []).map(({ config, ...c }) => {
-    const { tagline, brand_color } = parseCafeConfig(config);
-    return { ...c, tagline, brand_color };
+    const { tagline, brand_color, cover_url } = parseCafeConfig(config);
+    return { ...c, tagline, brand_color, cover_url };
   });
 }
 

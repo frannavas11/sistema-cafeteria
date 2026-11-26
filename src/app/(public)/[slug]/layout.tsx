@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getPublicCafe } from "@/features/tenants/queries";
-import { cafeThemeStyle } from "@/features/tenants/lib/theme";
+import { CafeTheme } from "@/features/tenants/components/cafe-theme";
 
 /** Tienda pública: mobile-first, con la marca de cada cafetería inyectada como tokens. */
 export default function StoreLayout({ children, params }: LayoutProps<"/[slug]">) {
@@ -24,7 +24,8 @@ async function StoreTheme({
   if (!cafe) notFound();
 
   return (
-    <div style={cafeThemeStyle(cafe.config)} className="min-h-dvh">
+    <div className="min-h-dvh">
+      <CafeTheme config={cafe.config} />
       {children}
     </div>
   );

@@ -38,7 +38,7 @@ export function ProductSheet({
     <Drawer.Root open={product !== null} onOpenChange={(open) => !open && onClose()}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-40 bg-tueste/40" />
-        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] max-w-xl flex-col rounded-t-2xl bg-card outline-none">
+        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] max-w-xl flex-col overflow-hidden rounded-t-2xl bg-card outline-none">
           {product && <ProductForm key={product.id} product={product} onAdd={onAdd} onClose={onClose} />}
         </Drawer.Content>
       </Drawer.Portal>
@@ -89,18 +89,30 @@ function ProductForm({
 
   return (
     <>
-      <div className="mx-auto mt-3 h-1.5 w-10 shrink-0 rounded-full bg-border" aria-hidden />
+      <div
+        className={cn(
+          "mx-auto h-1.5 w-10 shrink-0 rounded-full",
+          product.image_url ? "absolute inset-x-0 top-3 z-10 bg-paper/80" : "mt-3 bg-border",
+        )}
+        aria-hidden
+      />
       <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-6">
         {product.image_url && (
-          <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-xl bg-muted">
+          <div className="relative -mx-5 aspect-[16/11] bg-muted">
             <ProductImage src={product.image_url} sizes="(max-width: 640px) 100vw, 576px" priority />
           </div>
         )}
-        <Drawer.Title className="mt-5 font-wide text-heading font-extrabold">{product.name}</Drawer.Title>
-        <Drawer.Description className={product.description ? "mt-2 leading-relaxed text-muted-foreground" : "sr-only"}>
+        <div className="mt-5 flex items-start justify-between gap-4">
+          <Drawer.Title className="font-wide text-[1.75rem] leading-[1.02] font-extrabold tracking-[-0.03em]">
+            {product.name}
+          </Drawer.Title>
+          <p className="numeric shrink-0 pt-1 text-lg font-semibold">{formatARS(product.price)}</p>
+        </div>
+        <Drawer.Description
+          className={product.description ? "mt-2.5 max-w-[46ch] text-[1.0625rem] leading-relaxed text-tueste-2 italic" : "sr-only"}
+        >
           {product.description ?? `Opciones de ${product.name}`}
         </Drawer.Description>
-        <p className="numeric mt-3 text-lg font-semibold">{formatARS(product.price)}</p>
 
         {product.option_groups.map((group) => {
           const single = group.max_select === 1;

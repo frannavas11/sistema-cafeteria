@@ -26,6 +26,33 @@ function localNow(timezone: string, now: Date) {
   return { dow, minutes: Number(get("hour")) * 60 + Number(get("minute")) };
 }
 
+const DAY_SHORT = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+/** Semana agrupada para mostrar: "Lunes a viernes 07:30 a 21:00". Lunes primero. */
+export function weekSummary(hours: CafeHour[]): { days: string; time: string }[] {
+  const order = [1, 2, 3, 4, 5, 6, 0];
+  const byDay = order.map((d) => {
+    const shifts = hours
+      .filter((h) => h.weekday === d)
+      .sort((a, b) => toMinutes(a.opens_at) - toMinutes(b.opens_at))
+      .map((h) => `${short(h.opens_at)} a ${short(h.closes_at)}`);
+    return { day: d, time: shifts.length ? shifts.join(" y ") : "Cerrado" };
+  });
+  if (byDay.every((d) => d.time === byDay[0].time)) return [{ days: "Todos los días", time: byDay[0].time }];
+
+  const rows: { days: string; time: string }[] = [];
+  let start = 0;
+  for (let i = 1; i <= byDay.length; i++) {
+    if (i === byDay.length || byDay[i].time !== byDay[start].time) {
+      const a = DAY_SHORT[byDay[start].day];
+      const b = DAY_SHORT[byDay[i - 1].day];
+      rows.push({ days: start === i - 1 ? a : `${a} a ${b}`, time: byDay[start].time });
+      start = i;
+    }
+  }
+  return rows;
+}
+
 /**
  * Espejo de `private.is_cafe_open_now` para mostrar el estado en la tienda.
  * Es sólo informativo: la base vuelve a validar el horario al crear el pedido.
